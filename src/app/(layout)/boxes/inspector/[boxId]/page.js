@@ -26,6 +26,11 @@ import PopupCloseIcon from "@/modules/files/components/icons/PopupCloseIcon";
 
 import Link from "next/link";
 
+
+const isBoxTransferedOrShared = (boxType) => {
+    return boxType === 'transfered' || boxType === 'shared'
+  }
+
 export default function BoxInspectorPage() {
   const params = useParams();
   const router = useRouter();
@@ -422,7 +427,7 @@ export default function BoxInspectorPage() {
                 </div>
               </div>
             </div>
-            <div id="action-buttons" className="inspector_buttons">
+            {!isBoxTransferedOrShared(box.type) ? <div id="action-buttons" className="inspector_buttons">
               <button
                 type="button"
                 className="button is-inspector"
@@ -444,7 +449,7 @@ export default function BoxInspectorPage() {
               >
                 Burn
               </button>
-            </div>
+            </div> : <></>}
           </div>
         </div>
         <div data-popup="step-1-share" className="popup_component">

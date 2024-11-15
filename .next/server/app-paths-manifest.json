@@ -1,6 +1,5 @@
 {
-  "/(layout)/page": "app/(layout)/page.js",
-  "/(layout)/login/page": "app/(layout)/login/page.js",
+  "/(layout)/boxes/inspector/[boxId]/page": "app/(layout)/boxes/inspector/[boxId]/page.js",
   "/(layout)/files/inspector/[fileId]/page": "app/(layout)/files/inspector/[fileId]/page.js",
-  "/(layout)/boxes/inspector/[boxId]/page": "app/(layout)/boxes/inspector/[boxId]/page.js"
+  "/(layout)/page": "app/(layout)/page.js"
 }
