@@ -111,9 +111,6 @@ export default function AllFilesPage() {
   useEffect(() => {
     createBoxOpenTlRef.current = createOpenPopupTl("create-box");
     createBoxCloseTlRef.current = createClosePopupTl("create-box");
-
-    localStorage.setItem('test', 'test')
-    alert(localStorage.getItem('test'))
   }, []);
 
   return (
