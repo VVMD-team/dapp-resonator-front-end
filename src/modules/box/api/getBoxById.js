@@ -1,7 +1,9 @@
+import fetchWithToken from "@/lib/util/fetchWithToken";
 import { apiUrl, boxEndpoint } from "@/lib/constants";
+
 export default async function getBoxById(boxId) {
   try {
-    const response = await fetch(
+    const response = await fetchWithToken(
       `${apiUrl}${boxEndpoint}?id=${boxId}`,
       {
         method: "GET",

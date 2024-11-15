@@ -1,24 +1,29 @@
+import fetchWithToken from "@/lib/util/fetchWithToken";
 import { apiUrl, filesEndpoint } from "@/lib/constants";
 
-export default async function transferFile(transferWalletPublicKey,
+export default async function transferFile(
+  transferWalletPublicKey,
   fileId,
   fileBase64,
-  sharedKey) {
+  sharedKey
+) {
   try {
-    const response = await fetch(`${apiUrl}${filesEndpoint}/transfer`, {
-      method: "POST",
-      credentials: "include",
-      headers: {
-        "Content-Type": "application/json",
-        "ngrok-skip-browser-warning": "any",
-      },
-      body: JSON.stringify({
-        transferWalletPublicKey,
-        fileId,
-        fileBase64,
-        sharedKey,
-      }),
-    });
+    const response = await fetchWithToken(
+      `${apiUrl}${filesEndpoint}/transfer`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "ngrok-skip-browser-warning": "any",
+        },
+        body: JSON.stringify({
+          transferWalletPublicKey,
+          fileId,
+          fileBase64,
+          sharedKey,
+        }),
+      }
+    );
     const res = await response.json();
     return res;
   } catch (error) {

@@ -2,18 +2,13 @@
 
 import gsap from "gsap";
 
-import {
-    getBoxById
-} from "@/modules/box/api";
+import { getBoxById } from "@/modules/box/api";
 
 import { useRouter } from "next/navigation";
 
 import { downloadFile } from "@/lib/util/downloadFile";
 
-import {
-  byteToMegabyte,
-  timestampToDate,
-} from "@/lib/helpers";
+import { byteToMegabyte, timestampToDate } from "@/lib/helpers";
 
 import { useParams, redirect } from "next/navigation";
 
@@ -26,10 +21,9 @@ import PopupCloseIcon from "@/modules/files/components/icons/PopupCloseIcon";
 
 import Link from "next/link";
 
-
 const isBoxTransferedOrShared = (boxType) => {
-    return boxType === 'transfered' || boxType === 'shared'
-  }
+  return boxType === "transfered" || boxType === "shared";
+};
 
 export default function BoxInspectorPage() {
   const params = useParams();
@@ -40,7 +34,7 @@ export default function BoxInspectorPage() {
   let resetDownloadProgressTlRef = useRef();
   let downloadProgressTlRef = useRef();
 
-  let stepOneShareFileOpenTlRef = useRef(); 
+  let stepOneShareFileOpenTlRef = useRef();
   let stepOneShareFileCloseTlRef = useRef();
   let stepTwoTransferFileOpenTlRef = useRef();
   let stepTwoTransferFileCloseTlRef = useRef();
@@ -56,7 +50,6 @@ export default function BoxInspectorPage() {
   let successTransferCloseTlRef = useRef();
   let errorPopupOpenTlRef = useRef();
   let errorPopupCloseTlRef = useRef();
-  
 
   useEffect(() => {
     getBoxById(params.boxId)
@@ -67,34 +60,35 @@ export default function BoxInspectorPage() {
         console.log(error);
       });
 
+    stepTwoTransferFileOpenTlRef.current = createOpenPopupTl("step-2-transfer");
+    stepTwoTransferFileCloseTlRef.current =
+      createClosePopupTl("step-2-transfer");
+    burnFilePopupOpenTlRef.current = createOpenPopupTl("burn");
+    burnFilePopupCloseTlRef.current = createClosePopupTl("burn");
+    stepOneTransferFileOpenTlRef.current = createOpenPopupTl("step-1-transfer");
+    stepOneTransferFileCloseTlRef.current =
+      createClosePopupTl("step-1-transfer");
+    stepTwoShareFileOpenTlRef.current = createOpenPopupTl("step-2-share");
+    stepTwoShareFileCloseTlRef.current = createClosePopupTl("step-2-share");
+    successSharedOpenTlRef.current = createOpenPopupTl("success-shared");
+    successSharedCloseTlRef.current = createClosePopupTl("success-shared");
+    successTransferOpenTlRef.current = createOpenPopupTl("success-transfer");
+    successTransferCloseTlRef.current = createClosePopupTl("success-transfer");
+    errorPopupOpenTlRef.current = createOpenPopupTl("error");
+    errorPopupCloseTlRef.current = createClosePopupTl("error");
 
-      stepTwoTransferFileOpenTlRef.current = createOpenPopupTl("step-2-transfer");
-      stepTwoTransferFileCloseTlRef.current = createClosePopupTl("step-2-transfer");
-      burnFilePopupOpenTlRef.current = createOpenPopupTl("burn");
-      burnFilePopupCloseTlRef.current = createClosePopupTl("burn");
-      stepOneTransferFileOpenTlRef.current = createOpenPopupTl("step-1-transfer");
-      stepOneTransferFileCloseTlRef.current = createClosePopupTl("step-1-transfer");
-      stepTwoShareFileOpenTlRef.current = createOpenPopupTl("step-2-share");
-      stepTwoShareFileCloseTlRef.current = createClosePopupTl("step-2-share");
-      successSharedOpenTlRef.current = createOpenPopupTl("success-shared");
-      successSharedCloseTlRef.current = createClosePopupTl("success-shared");
-      successTransferOpenTlRef.current = createOpenPopupTl("success-transfer");
-      successTransferCloseTlRef.current = createClosePopupTl("success-transfer");
-      errorPopupOpenTlRef.current = createOpenPopupTl("error");
-      errorPopupCloseTlRef.current = createClosePopupTl("error");
+    stepOneShareFileOpenTlRef.current = createOpenPopupTl("step-1-share");
+    stepOneShareFileCloseTlRef.current = createClosePopupTl("step-1-share");
 
-      stepOneShareFileOpenTlRef.current = createOpenPopupTl("step-1-share");
-      stepOneShareFileCloseTlRef.current = createClosePopupTl("step-1-share");
-
-      resetDownloadProgressTlRef.current = gsap.timeline({ paused: true });
-      resetDownloadProgressTlRef.current.to("#download-progress", {
-        duration: 0.1,
-        width: "0%",
-        onComplete: () => {
-          const el = document.getElementById("download-percentage");
-          el.textContent = "01";
-        },
-      });
+    resetDownloadProgressTlRef.current = gsap.timeline({ paused: true });
+    resetDownloadProgressTlRef.current.to("#download-progress", {
+      duration: 0.1,
+      width: "0%",
+      onComplete: () => {
+        const el = document.getElementById("download-percentage");
+        el.textContent = "01";
+      },
+    });
   }, []);
 
   useEffect(() => {
@@ -103,7 +97,7 @@ export default function BoxInspectorPage() {
     let percentageCounter = {
       value: 0,
     };
-    
+
     let firstSteps = [15, 27, 33, 42]; // percentage
     let randomFirstStepIndex = Math.floor(Math.random() * firstSteps.length);
     let firstStep = firstSteps[randomFirstStepIndex];
@@ -126,67 +120,66 @@ export default function BoxInspectorPage() {
     let thirdStepDuration = downloadDurations[randomThirdStepDurationIndex];
 
     downloadProgressTlRef.current
-    .to("#download-progress", {
-      duration: firsStepDuration,
-      width: `${firstStep}%`,
-    })
-    .to(
-      percentageCounter,
-      {
+      .to("#download-progress", {
         duration: firsStepDuration,
-        value: firstStep,
-        onUpdate: () => {
-          const el = document.getElementById("download-percentage");
-          el.textContent = percentageCounter.value.toFixed(0);
+        width: `${firstStep}%`,
+      })
+      .to(
+        percentageCounter,
+        {
+          duration: firsStepDuration,
+          value: firstStep,
+          onUpdate: () => {
+            const el = document.getElementById("download-percentage");
+            el.textContent = percentageCounter.value.toFixed(0);
+          },
         },
-      },
-      "<"
-    )
-    .to("#download-progress", {
-      delay: secondStepDuration / 3,
-      duration: secondStepDuration,
-      width: `${secondStep}%`,
-    })
-    .to(
-      percentageCounter,
-      {
+        "<"
+      )
+      .to("#download-progress", {
+        delay: secondStepDuration / 3,
         duration: secondStepDuration,
-        value: secondStep,
-        onUpdate: () => {
-          const el = document.getElementById("download-percentage");
-          el.textContent = percentageCounter.value.toFixed(0);
+        width: `${secondStep}%`,
+      })
+      .to(
+        percentageCounter,
+        {
+          duration: secondStepDuration,
+          value: secondStep,
+          onUpdate: () => {
+            const el = document.getElementById("download-percentage");
+            el.textContent = percentageCounter.value.toFixed(0);
+          },
         },
-      },
-      "<"
-    )
-    .to("#download-progress", {
-      delay: thirdStepDuration / 3,
-      duration: thirdStepDuration,
-      width: "100%",
-    })
-    .to(
-      percentageCounter,
-      {
+        "<"
+      )
+      .to("#download-progress", {
+        delay: thirdStepDuration / 3,
         duration: thirdStepDuration,
-        value: 100,
-        onUpdate: () => {
-          const el = document.getElementById("download-percentage");
-          el.textContent = percentageCounter.value.toFixed(0);
+        width: "100%",
+      })
+      .to(
+        percentageCounter,
+        {
+          duration: thirdStepDuration,
+          value: 100,
+          onUpdate: () => {
+            const el = document.getElementById("download-percentage");
+            el.textContent = percentageCounter.value.toFixed(0);
+          },
         },
-      },
-      "<"
-    );
+        "<"
+      );
 
     downloadFilePopupOpenTlRef.current = createOpenPopupTl(
       "download",
       downloadProgressTlRef.current
-    )
-  }, [downloadProgressTlRef.current])
-
+    );
+  }, [downloadProgressTlRef.current]);
 
   useEffect(() => {
     if (!resetDownloadProgressTlRef?.current) return;
-    
+
     downloadFilePopupCloseTlRef.current = createClosePopupTl(
       "download",
       resetDownloadProgressTlRef.current
@@ -201,7 +194,7 @@ export default function BoxInspectorPage() {
         }
       },
     });
-  }, [resetDownloadProgressTlRef.current])
+  }, [resetDownloadProgressTlRef.current]);
 
   const openStepOneShareFilePopup = async () => {
     stepOneShareFileOpenTlRef.current.restart();
@@ -243,7 +236,6 @@ export default function BoxInspectorPage() {
     }
   };
 
-
   const openBurnFilePopup = async () => {
     burnFilePopupOpenTlRef.current.restart();
   };
@@ -276,7 +268,6 @@ export default function BoxInspectorPage() {
       successSharedCloseTlRef.current.restart();
     }
   };
-
 
   const openSuccessTransferPopup = async () => {
     successTransferOpenTlRef.current.restart();
@@ -406,9 +397,7 @@ export default function BoxInspectorPage() {
                 <div className="inspector_info_row">
                   <span>Kind: </span>
                   <span> </span>
-                  <span data-field-content="file-type">
-                    Box
-                  </span>
+                  <span data-field-content="file-type">Box</span>
                 </div>
                 <div className="inspector_info_row">
                   <span>Size: </span>
@@ -427,29 +416,33 @@ export default function BoxInspectorPage() {
                 </div>
               </div>
             </div>
-            {!isBoxTransferedOrShared(box.type) ? <div id="action-buttons" className="inspector_buttons">
-              <button
-                type="button"
-                className="button is-inspector"
-                onClick={openStepOneShareFilePopup}
-              >
-                Share
-              </button>
-              {/*<button
+            {!isBoxTransferedOrShared(box.type) ? (
+              <div id="action-buttons" className="inspector_buttons">
+                <button
+                  type="button"
+                  className="button is-inspector"
+                  onClick={openStepOneShareFilePopup}
+                >
+                  Share
+                </button>
+                {/*<button
                 type="button"
                 className="button is-inspector"
                 onClick={openStepOneTransferFilePopup}
               >
                 Transfer
               </button>*/}
-              <button
-                type="button"
-                className="button is-inspector"
-                onClick={openBurnFilePopup}
-              >
-                Burn
-              </button>
-            </div> : <></>}
+                <button
+                  type="button"
+                  className="button is-inspector"
+                  onClick={openBurnFilePopup}
+                >
+                  Burn
+                </button>
+              </div>
+            ) : (
+              <></>
+            )}
           </div>
         </div>
         <div data-popup="step-1-share" className="popup_component">

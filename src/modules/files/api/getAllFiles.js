@@ -1,10 +1,10 @@
+import fetchWithToken from "@/lib/util/fetchWithToken";
 import { apiUrl, filesEndpoint } from "@/lib/constants";
 
 export default async function getAllFiles() {
   try {
-    const response = await fetch(`${apiUrl}${filesEndpoint}/all`, {
+    const response = await fetchWithToken(`${apiUrl}${filesEndpoint}/all`, {
       method: "GET",
-      credentials: "include",
       headers: {
         "ngrok-skip-browser-warning": "any",
       },

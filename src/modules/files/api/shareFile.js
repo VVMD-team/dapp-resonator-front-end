@@ -1,13 +1,15 @@
+import fetchWithToken from "@/lib/util/fetchWithToken";
 import { apiUrl, filesEndpoint } from "@/lib/constants";
 
-export default async function shareFile(shareWalletPublicKey,
-    fileId,
-    fileBase64,
-    sharedKey) {
+export default async function shareFile(
+  shareWalletPublicKey,
+  fileId,
+  fileBase64,
+  sharedKey
+) {
   try {
-    const response = await fetch(`${apiUrl}${filesEndpoint}/share`, {
+    const response = await fetchWithToken(`${apiUrl}${filesEndpoint}/share`, {
       method: "POST",
-      credentials: "include",
       headers: {
         "Content-Type": "application/json",
         "ngrok-skip-browser-warning": "any",

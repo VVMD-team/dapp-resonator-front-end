@@ -1,10 +1,10 @@
+import fetchWithToken from "@/lib/util/fetchWithToken";
 import { apiUrl, filesEndpoint } from "@/lib/constants";
 
 export default async function deleteFile(fileId) {
   try {
-    const response = await fetch(`${apiUrl}${filesEndpoint}/delete`, {
+    const response = await fetchWithToken(`${apiUrl}${filesEndpoint}/delete`, {
       method: "DELETE",
-      credentials: "include",
       headers: {
         "Content-Type": "application/json",
         "ngrok-skip-browser-warning": "any",

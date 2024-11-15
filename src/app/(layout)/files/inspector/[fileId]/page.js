@@ -19,7 +19,7 @@ import {
   updatePercentage,
 } from "@/lib/helpers";
 
-import { useParams, redirect } from "next/navigation";
+import { useParams } from "next/navigation";
 
 import { useEffect, useState, useRef } from "react";
 
@@ -30,7 +30,19 @@ import PopupCloseIcon from "@/modules/files/components/icons/PopupCloseIcon";
 
 import Link from "next/link";
 
+import {
+  generateFakeCryptoSignatureWithApiRoute,
+  decryptFileWithApiRoute,
+  encryptFileWithApiRoute,
+  recryptFileWithApiRoute,
+} from "@/lib/util/cryption";
+
+import { useUser } from "@/modules/user/context/UserContext";
+import { useSignMessage } from "wagmi";
+
 export default function FileInspectorPage() {
+  const { signMessageAsync } = useSignMessage();
+  const { user } = useUser();
   const params = useParams();
   const router = useRouter();
 
@@ -39,7 +51,7 @@ export default function FileInspectorPage() {
   let resetDownloadProgressTlRef = useRef();
   let downloadProgressTlRef = useRef();
 
-  let stepOneShareFileOpenTlRef = useRef(); 
+  let stepOneShareFileOpenTlRef = useRef();
   let stepOneShareFileCloseTlRef = useRef();
   let stepTwoTransferFileOpenTlRef = useRef();
   let stepTwoTransferFileCloseTlRef = useRef();
@@ -55,153 +67,8 @@ export default function FileInspectorPage() {
   let successTransferCloseTlRef = useRef();
   let errorPopupOpenTlRef = useRef();
   let errorPopupCloseTlRef = useRef();
-  
-
-  useEffect(() => {
-    getFileById(params.fileId)
-      .then((file) => {
-        console.log(file);
-        setFile(file);
-      })
-      .catch((error) => {
-        console.log(error);
-      });
-
-
-      stepTwoTransferFileOpenTlRef.current = createOpenPopupTl("step-2-transfer");
-      stepTwoTransferFileCloseTlRef.current = createClosePopupTl("step-2-transfer");
-      burnFilePopupOpenTlRef.current = createOpenPopupTl("burn");
-      burnFilePopupCloseTlRef.current = createClosePopupTl("burn");
-      stepOneTransferFileOpenTlRef.current = createOpenPopupTl("step-1-transfer");
-      stepOneTransferFileCloseTlRef.current = createClosePopupTl("step-1-transfer");
-      stepTwoShareFileOpenTlRef.current = createOpenPopupTl("step-2-share");
-      stepTwoShareFileCloseTlRef.current = createClosePopupTl("step-2-share");
-      successSharedOpenTlRef.current = createOpenPopupTl("success-shared");
-      successSharedCloseTlRef.current = createClosePopupTl("success-shared");
-      successTransferOpenTlRef.current = createOpenPopupTl("success-transfer");
-      successTransferCloseTlRef.current = createClosePopupTl("success-transfer");
-      errorPopupOpenTlRef.current = createOpenPopupTl("error");
-      errorPopupCloseTlRef.current = createClosePopupTl("error");
-
-      stepOneShareFileOpenTlRef.current = createOpenPopupTl("step-1-share");
-      stepOneShareFileCloseTlRef.current = createClosePopupTl("step-1-share");
-
-      resetDownloadProgressTlRef.current = gsap.timeline({ paused: true });
-      resetDownloadProgressTlRef.current.to("#download-progress", {
-        duration: 0.1,
-        width: "0%",
-        onComplete: () => {
-          const el = document.getElementById("download-percentage");
-          el.textContent = "01";
-        },
-      });
-  }, []);
-
-  useEffect(() => {
-    if (!downloadProgressTlRef?.current) return;
-
-    let percentageCounter = {
-      value: 0,
-    };
-    
-    let firstSteps = [15, 27, 33, 42]; // percentage
-    let randomFirstStepIndex = Math.floor(Math.random() * firstSteps.length);
-    let firstStep = firstSteps[randomFirstStepIndex];
-    let secondSteps = [63, 75, 83, 89]; // percentage
-    let randomSecondStepIndex = Math.floor(Math.random() * secondSteps.length);
-    let secondStep = secondSteps[randomSecondStepIndex];
-    let downloadDurations = [0.3, 0.4, 0.5, 0.6, 0.7]; // seconds
-    let randomFirsStepDurationIndex = Math.floor(
-      Math.random() * downloadDurations.length
-    );
-    let randomSecondStDurationIndex = Math.floor(
-      Math.random() * downloadDurations.length
-    );
-    let randomThirdStepDurationIndex = Math.floor(
-      Math.random() * downloadDurations.length
-    );
-
-    let firsStepDuration = downloadDurations[randomFirsStepDurationIndex];
-    let secondStepDuration = downloadDurations[randomSecondStDurationIndex];
-    let thirdStepDuration = downloadDurations[randomThirdStepDurationIndex];
-
-    downloadProgressTlRef.current
-    .to("#download-progress", {
-      duration: firsStepDuration,
-      width: `${firstStep}%`,
-    })
-    .to(
-      percentageCounter,
-      {
-        duration: firsStepDuration,
-        value: firstStep,
-        onUpdate: () => {
-          const el = document.getElementById("download-percentage");
-          el.textContent = percentageCounter.value.toFixed(0);
-        },
-      },
-      "<"
-    )
-    .to("#download-progress", {
-      delay: secondStepDuration / 3,
-      duration: secondStepDuration,
-      width: `${secondStep}%`,
-    })
-    .to(
-      percentageCounter,
-      {
-        duration: secondStepDuration,
-        value: secondStep,
-        onUpdate: () => {
-          const el = document.getElementById("download-percentage");
-          el.textContent = percentageCounter.value.toFixed(0);
-        },
-      },
-      "<"
-    )
-    .to("#download-progress", {
-      delay: thirdStepDuration / 3,
-      duration: thirdStepDuration,
-      width: "100%",
-    })
-    .to(
-      percentageCounter,
-      {
-        duration: thirdStepDuration,
-        value: 100,
-        onUpdate: () => {
-          const el = document.getElementById("download-percentage");
-          el.textContent = percentageCounter.value.toFixed(0);
-        },
-      },
-      "<"
-    );
-
-    downloadFilePopupOpenTlRef.current = createOpenPopupTl(
-      "download",
-      downloadProgressTlRef.current
-    )
-  }, [downloadProgressTlRef.current])
-
-
-  useEffect(() => {
-    if (!resetDownloadProgressTlRef?.current) return;
-    
-    downloadFilePopupCloseTlRef.current = createClosePopupTl(
-      "download",
-      resetDownloadProgressTlRef.current
-    );
-
-    downloadProgressTlRef.current = gsap.timeline({
-      paused: true,
-      ease: "none",
-      onComplete: () => {
-        if (!downloadFilePopupCloseTlRef.current.isActive()) {
-          downloadFilePopupCloseTlRef.current.restart();
-        }
-      },
-    });
-  }, [resetDownloadProgressTlRef.current])
+  const downloadFilePopupOpenTlRef = useRef();
+  const downloadFilePopupCloseTlRef = useRef();
 
   const openStepOneShareFilePopup = async () => {
     stepOneShareFileOpenTlRef.current.restart();
@@ -243,7 +110,6 @@ export default function FileInspectorPage() {
     }
   };
 
-
   const openBurnFilePopup = async () => {
     burnFilePopupOpenTlRef.current.restart();
   };
@@ -254,16 +120,13 @@ export default function FileInspectorPage() {
     }
   };
 
-  const downloadFilePopupOpenTlRef = useRef();
-  const downloadFilePopupCloseTlRef = useRef();
-
   const openDownloadFilePopup = async () => {
     downloadFilePopupOpenTlRef.current.restart();
   };
 
   const closeDownloadFilePopup = async () => {
-    if (!downloadFilePopupCloseTl.isActive()) {
-      downloadFilePopupCloseTl.restart();
+    if (!downloadFilePopupCloseTlRef.current.isActive()) {
+      downloadFilePopupCloseTlRef.current.restart();
     }
   };
 
@@ -276,7 +139,6 @@ export default function FileInspectorPage() {
       successSharedCloseTlRef.current.restart();
     }
   };
-
 
   const openSuccessTransferPopup = async () => {
     successTransferOpenTlRef.current.restart();
@@ -298,7 +160,23 @@ export default function FileInspectorPage() {
     }
   };
 
-  const handleShareFile = async (shareWalletPublicKey, file) => {
+  const handleShareFile = async (e) => {
+    e.preventDefault();
+
+    const formData = new FormData(e.target);
+    const shareWalletPublicKey = formData.get("adress");
+
+    if (!shareWalletPublicKey) return;
+
+    const fakeSignature = await generateFakeCryptoSignatureWithApiRoute();
+
+    const blob = await recryptFileWithApiRoute(
+      file,
+      fakeSignature,
+      user.wallet.publicKey,
+      user.wallet.walletProvider,
+      signMessageAsync
+    );
     // const { fileBase64, sharedKey } = await decryptFile(file);
     // shareFile(shareWalletPublicKey, file.id, fileBase64, sharedKey).then(
     //   (res) => {
@@ -324,15 +202,19 @@ export default function FileInspectorPage() {
     // );
   };
 
-  const handleDeleteFile = async (fileId) => {
-    deleteFile(fileId).then((result) => {
-      if (!result) {
-        console.error("Error deleting file");
-        return;
-      }
+  const handleDeleteFile = async () => {
+    deleteFile(file.id)
+      .then((result) => {
+        if (!result) {
+          console.error("Error deleting file");
+          return;
+        }
 
-      redirect("/files/all");
-    });
+        router.replace("/files/all");
+      })
+      .catch((error) => {
+        console.log(error);
+      });
   };
 
   const handleDownloadFile = async () => {
@@ -342,6 +224,152 @@ export default function FileInspectorPage() {
       console.error("File not found");
     }
   };
+
+  useEffect(() => {
+    getFileById(params.fileId)
+      .then((file) => {
+        console.log(file);
+        setFile(file);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+
+    stepTwoTransferFileOpenTlRef.current = createOpenPopupTl("step-2-transfer");
+    stepTwoTransferFileCloseTlRef.current =
+      createClosePopupTl("step-2-transfer");
+    burnFilePopupOpenTlRef.current = createOpenPopupTl("burn");
+    burnFilePopupCloseTlRef.current = createClosePopupTl("burn");
+    stepOneTransferFileOpenTlRef.current = createOpenPopupTl("step-1-transfer");
+    stepOneTransferFileCloseTlRef.current =
+      createClosePopupTl("step-1-transfer");
+    stepTwoShareFileOpenTlRef.current = createOpenPopupTl("step-2-share");
+    stepTwoShareFileCloseTlRef.current = createClosePopupTl("step-2-share");
+    successSharedOpenTlRef.current = createOpenPopupTl("success-shared");
+    successSharedCloseTlRef.current = createClosePopupTl("success-shared");
+    successTransferOpenTlRef.current = createOpenPopupTl("success-transfer");
+    successTransferCloseTlRef.current = createClosePopupTl("success-transfer");
+    errorPopupOpenTlRef.current = createOpenPopupTl("error");
+    errorPopupCloseTlRef.current = createClosePopupTl("error");
+
+    stepOneShareFileOpenTlRef.current = createOpenPopupTl("step-1-share");
+    stepOneShareFileCloseTlRef.current = createClosePopupTl("step-1-share");
+
+    resetDownloadProgressTlRef.current = gsap.timeline({ paused: true });
+    resetDownloadProgressTlRef.current.to("#download-progress", {
+      duration: 0.1,
+      width: "0%",
+      onComplete: () => {
+        const el = document.getElementById("download-percentage");
+        el.textContent = "01";
+      },
+    });
+  }, []);
+
+  useEffect(() => {
+    if (!downloadProgressTlRef?.current) return;
+
+    let percentageCounter = {
+      value: 0,
+    };
+
+    let firstSteps = [15, 27, 33, 42]; // percentage
+    let randomFirstStepIndex = Math.floor(Math.random() * firstSteps.length);
+    let firstStep = firstSteps[randomFirstStepIndex];
+    let secondSteps = [63, 75, 83, 89]; // percentage
+    let randomSecondStepIndex = Math.floor(Math.random() * secondSteps.length);
+    let secondStep = secondSteps[randomSecondStepIndex];
+    let downloadDurations = [0.3, 0.4, 0.5, 0.6, 0.7]; // seconds
+    let randomFirsStepDurationIndex = Math.floor(
+      Math.random() * downloadDurations.length
+    );
+    let randomSecondStDurationIndex = Math.floor(
+      Math.random() * downloadDurations.length
+    );
+    let randomThirdStepDurationIndex = Math.floor(
+      Math.random() * downloadDurations.length
+    );
+
+    let firsStepDuration = downloadDurations[randomFirsStepDurationIndex];
+    let secondStepDuration = downloadDurations[randomSecondStDurationIndex];
+    let thirdStepDuration = downloadDurations[randomThirdStepDurationIndex];
+
+    downloadProgressTlRef.current
+      .to("#download-progress", {
+        duration: firsStepDuration,
+        width: `${firstStep}%`,
+      })
+      .to(
+        percentageCounter,
+        {
+          duration: firsStepDuration,
+          value: firstStep,
+          onUpdate: () => {
+            const el = document.getElementById("download-percentage");
+            el.textContent = percentageCounter.value.toFixed(0);
+          },
+        },
+        "<"
+      )
+      .to("#download-progress", {
+        delay: secondStepDuration / 3,
+        duration: secondStepDuration,
+        width: `${secondStep}%`,
+      })
+      .to(
+        percentageCounter,
+        {
+          duration: secondStepDuration,
+          value: secondStep,
+          onUpdate: () => {
+            const el = document.getElementById("download-percentage");
+            el.textContent = percentageCounter.value.toFixed(0);
+          },
+        },
+        "<"
+      )
+      .to("#download-progress", {
+        delay: thirdStepDuration / 3,
+        duration: thirdStepDuration,
+        width: "100%",
+      })
+      .to(
+        percentageCounter,
+        {
+          duration: thirdStepDuration,
+          value: 100,
+          onUpdate: () => {
+            const el = document.getElementById("download-percentage");
+            el.textContent = percentageCounter.value.toFixed(0);
+          },
+        },
+        "<"
+      );
+
+    downloadFilePopupOpenTlRef.current = createOpenPopupTl(
+      "download",
+      downloadProgressTlRef.current
+    );
+  }, [downloadProgressTlRef.current]);
+
+  useEffect(() => {
+    if (!resetDownloadProgressTlRef?.current) return;
+
+    downloadFilePopupCloseTlRef.current = createClosePopupTl(
+      "download",
+      resetDownloadProgressTlRef.current
+    );
+
+    downloadProgressTlRef.current = gsap.timeline({
+      paused: true,
+      ease: "none",
+      onComplete: () => {
+        if (!downloadFilePopupCloseTlRef.current.isActive()) {
+          downloadFilePopupCloseTlRef.current.restart();
+        }
+      },
+    });
+  }, [resetDownloadProgressTlRef.current]);
 
   return (
     <div className="page-wrapper">
@@ -561,11 +589,11 @@ export default function FileInspectorPage() {
               <div className="text-weight-medium">
                 {file?.name ? file.name : "-"}
               </div>
-              <div className="popup_transfer">
+              <form className="popup_transfer" onSubmit={handleShareFile}>
                 <input
                   type="text"
                   placeholder="Contact address"
-                  id="share-input"
+                  name="adress"
                   className="form_input"
                 />
                 <button
@@ -575,7 +603,7 @@ export default function FileInspectorPage() {
                 >
                   Share
                 </button>
-              </div>
+              </form>
             </div>
             <button
               type="button"

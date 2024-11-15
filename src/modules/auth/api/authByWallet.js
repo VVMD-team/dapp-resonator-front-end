@@ -1,4 +1,5 @@
 import { apiUrl } from "@/lib/constants";
+import { authTokenStorageKey } from "@/lib/constants";
 
 export default async function authByWallet(publicKey, signature, walletType) {
   const formData = new FormData();
@@ -9,9 +10,15 @@ export default async function authByWallet(publicKey, signature, walletType) {
     const response = await fetch(`${apiUrl}/auth/wallet`, {
       method: "POST",
       body: formData,
-      credentials: "include",
     });
     const data = await response.json();
+
+    const token = data?.authorization;
+
+    if (token) {
+      localStorage.setItem(authTokenStorageKey, token);
+    }
+
     return data?.user;
   } catch (error) {
     console.error(error);

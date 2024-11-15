@@ -1,10 +1,10 @@
+import fetchWithToken from "@/lib/util/fetchWithToken";
 import { apiUrl, userDataEndpoint } from "@/lib/constants";
 
 export default async function getUserData() {
   try {
-    const response = await fetch(`${apiUrl}${userDataEndpoint}`, {
+    const response = await fetchWithToken(`${apiUrl}${userDataEndpoint}`, {
       method: "GET",
-      credentials: "include",
       headers: {
         "ngrok-skip-browser-warning": "any",
       },

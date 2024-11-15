@@ -1,11 +1,11 @@
+import fetchWithToken from "@/lib/util/fetchWithToken";
 import { apiUrl } from "@/lib/constants";
 
 export default async function uploadFiles(formData) {
   try {
-    const response = await fetch(`${apiUrl}/upload-files`, {
+    const response = await fetchWithToken(`${apiUrl}/upload-files`, {
       method: "POST",
       body: formData,
-      credentials: "include",
     });
 
     if (!response.ok) {

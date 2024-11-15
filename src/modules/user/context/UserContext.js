@@ -1,6 +1,8 @@
 import { createContext, useContext, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 
+import fetchWithToken from "@/lib/util/fetchWithToken";
+
 import { apiUrl } from "@/lib/constants";
 
 const UserContext = createContext();
@@ -16,9 +18,8 @@ export function UserProvider({ children }) {
   useEffect(() => {
     const getUser = async () => {
       try {
-        const response = await fetch(`${apiUrl}/user`, {
+        const response = await fetchWithToken(`${apiUrl}/user`, {
           method: "GET",
-          credentials: "include",
           headers: {
             "ngrok-skip-browser-warning": "any",
           },

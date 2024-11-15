@@ -4,7 +4,7 @@ export default function ListItem({ item, id, type }) {
   }
 
   const isFile = type === "file";
-  const itemSize = item.size / (1024 * 1024); // Convert to Megabite 
+  const itemSize = item.size / (1024 * 1024); // Convert to Megabite
   const itemSizeRounded =
     itemSize > 1 ? itemSize.toFixed(2) : itemSize.toFixed(6);
   let itemName = item.name.split(".").slice(0, -1).join(".");

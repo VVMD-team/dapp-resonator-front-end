@@ -28,3 +28,5 @@ export const userDataEndpoint = "/user";
 export const balanceEndpoint = "/user/balance";
 export const boxEndpoint = "/box";
 export const createBoxEndpoint = "/box/create";
+
+export const authTokenStorageKey = "auth_token";
