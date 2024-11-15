@@ -1,7 +1,6 @@
 import { getBoxById } from "@/modules/box/api";
 import { redirect } from "next/navigation";
 
-import { decryptFile } from "@/lib/util/cryption";
 import { downloadFile } from "../../../../lib/util/downloadFile";
 
 import { useEffect } from "react";

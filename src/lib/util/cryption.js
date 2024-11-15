@@ -1,54 +1,31 @@
-import { Buffer } from "buffer";
+export async function encryptFileWithApiRoute(file, signature) {
+  const formData = new FormData();
+  formData.append("file", file);
+  formData.append("signature", signature);
 
-function signatureToKeyIV(signature) {
-  const hexSignature = signature.slice(2);
+  const response = await fetch("/api/encrypt-file", {
+    method: "POST",
+    body: formData,
+  });
 
-  const key = hexSignature.slice(0, 64);
-  const iv = hexSignature.slice(64, 96);
-  const keyBuffer = Buffer.from(key, "hex");
-  const ivBuffer = Buffer.from(iv, "hex");
+  const blob = await response.blob();
 
-  return { keyBuffer, ivBuffer };
+  return blob;
 }
 
-export async function encryptFile(fileData, signature) {
-  const { keyBuffer, ivBuffer } = signatureToKeyIV(signature);
+export async function decryptFileWithApiRoute(file, signature) {
+  const formData = new FormData();
+  formData.append("file", file);
+  formData.append("signature", signature);
 
-  const cryptoKey = await window.crypto.subtle.importKey(
-    "raw",
-    keyBuffer,
-    "AES-GCM",
-    false,
-    ["encrypt"]
-  );
+  const response = await fetch("/api/decrypt-file", {
+    method: "POST",
+    body: formData,
+  });
 
-  const encryptedData = await window.crypto.subtle.encrypt(
-    { name: "AES-GCM", iv: ivBuffer },
-    cryptoKey,
-    fileData
-  );
+  const blob = await response.blob();
 
-  return new Uint8Array(encryptedData);
-}
-
-export async function decryptFile(encryptedData, signature) {
-  const { keyBuffer, ivBuffer } = signatureToKeyIV(signature);
-
-  const cryptoKey = await window.crypto.subtle.importKey(
-    "raw",
-    keyBuffer,
-    "AES-GCM",
-    false,
-    ["decrypt"]
-  );
-
-  const decryptedData = await window.crypto.subtle.decrypt(
-    { name: "AES-GCM", iv: ivBuffer },
-    cryptoKey,
-    encryptedData
-  );
-
-  return new Uint8Array(decryptedData);
+  return blob;
 }
 
 export async function generateFakeCryptoSignature() {

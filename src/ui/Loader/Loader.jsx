@@ -49,7 +49,7 @@ export default function Loader() {
     <div id="loader" className="loader_component">
       <div className="loader_image">
         <img
-          src="../images/logo-square.svg"
+          src="/images/logo-square.svg"
           loading="lazy"
           id="loader-icon"
           alt="Resonator logotype"

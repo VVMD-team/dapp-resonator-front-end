@@ -17,7 +17,8 @@ export function fileToArrayBuffer(file) {
 }
 
 export const byteToMegabyte = (num) => {
-  return ((num / (1024 * 1024)).toFixed(6))
+  const result = num / (1024 * 1024);
+  return result > 1 ? result.toFixed(2) : result.toFixed(6);
 }
 
 export const timestampToDate = (timestamp) => {

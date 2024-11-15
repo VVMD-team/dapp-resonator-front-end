@@ -16,7 +16,7 @@ export default async function deleteFile(fileId) {
     const res = await response.json();
     return res;
   } catch (error) {
-    sharedTransferErrorOpenTl.restart();
+    //errorOpenTl.restart();
     console.error(error);
     return null;
   }

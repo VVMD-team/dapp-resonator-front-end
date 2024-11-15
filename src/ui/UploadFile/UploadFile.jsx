@@ -1,6 +1,5 @@
 import Icon from "./Icon";
 
-import { fileToArrayBuffer } from "@/lib/helpers";
 import generateFileSignatureMessage from "@/lib/util/generateFileSignatureMessage";
 
 import { createOpenPopupTl, createClosePopupTl } from "@/lib/util/animations";
@@ -12,8 +11,9 @@ import { useUser } from "@/modules/user/context/UserContext";
 
 import { useSignMessage } from "wagmi";
 
-import { encryptFile } from "@/lib/util/cryption";
 import { uploadFiles } from "@/modules/files/api";
+
+import { encryptFileWithApiRoute } from "@/lib/util/cryption";
 
 import { memo } from "react";
 
@@ -148,12 +148,9 @@ export default memo(function UploadFile({ onUpload }) {
 
       for (let index = 0; index < files.length; index++) {
         const file = files[index];
-        const fileBuffer = await fileToArrayBuffer(file);
-        const encryptedUint8Array = await encryptFile(fileBuffer, signature);
-        const encryptedBlob = new Blob([encryptedUint8Array], {
-          type: file.type,
-        });
-        console.log(encryptedBlob);
+
+        const encryptedBlob = await encryptFileWithApiRoute(file, signature);
+
         uploadOpenTl.restart();
         formData.append(`files[${index}][encryptedBlob]`, encryptedBlob);
         formData.append(`files[${index}][originalName]`, file.name);
