@@ -1,7 +1,7 @@
 import { apiUrl, createBoxEndpoint } from "@/lib/constants";
 
 export default async function createBox(boxName) {
-  console.log('🚀  boxName', boxName)
+  alert(boxName);
   try {
     const response = await fetch(`${apiUrl}${createBoxEndpoint}`, {
       method: "POST",
