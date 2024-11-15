@@ -1,7 +1,6 @@
 import { apiUrl, createBoxEndpoint } from "@/lib/constants";
 
 export default async function createBox(boxName) {
-  alert(boxName);
   try {
     const response = await fetch(`${apiUrl}${createBoxEndpoint}`, {
       method: "POST",
@@ -16,6 +15,7 @@ export default async function createBox(boxName) {
     });
 
     const data = await response.json();
+    alert(JSON.stringify(data))
     return data;
   } catch (error) {
     console.error(error);
