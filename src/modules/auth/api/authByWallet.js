@@ -16,7 +16,7 @@ export default async function authByWallet(publicKey, signature, walletType) {
     const token = data?.authorization;
 
     if (token) {
-      localStorage.setItem(authTokenStorageKey, token);
+      window.localStorage.setItem(authTokenStorageKey, token);
     }
 
     return data?.user;

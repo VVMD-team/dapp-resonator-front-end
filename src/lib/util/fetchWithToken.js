@@ -25,7 +25,7 @@ const fetchWithToken = async (url, options) => {
     }
   });
 
-  return await response.json();
+  return response;
 };
 
 export default fetchWithToken;
