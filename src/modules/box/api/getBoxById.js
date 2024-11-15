@@ -2,7 +2,7 @@ import { apiUrl, boxEndpoint } from "@/lib/constants";
 export default async function getBoxById(boxId) {
   try {
     const response = await fetch(
-      `${apiUrl}${boxEndpoint}/box?id=${boxId}`,
+      `${apiUrl}${boxEndpoint}?id=${boxId}`,
       {
         method: "GET",
         credentials: "include",

@@ -61,13 +61,13 @@ export default function ListItem({ item, id, type }) {
           </div>
         </div>
         <a
-          href={`/files/inspector/${id}`}
+          href={isFile ? `/files/inspector/${id}` : `/boxes/inspector/${id}`}
           className={`${isFile ? "files-item_more" : "file-item_box-link"}`}
         ></a>
       </div>
       {!isFile && (
         <a
-          href={`/files/inspector/${id}`}
+          href={isFile ? `/files/inspector/${id}` : `/boxes/inspector/${id}`}
           className="files-item_more"
         ></a>
       )}

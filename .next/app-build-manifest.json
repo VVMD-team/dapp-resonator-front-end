@@ -16,15 +16,20 @@
       "static/chunks/main-app.js",
       "static/chunks/app/(layout)/page.js"
     ],
-    "/(layout)/login/page": [
-      "static/chunks/webpack.js",
-      "static/chunks/main-app.js",
-      "static/chunks/app/(layout)/login/page.js"
-    ],
     "/(layout)/files/inspector/[fileId]/page": [
       "static/chunks/webpack.js",
       "static/chunks/main-app.js",
       "static/chunks/app/(layout)/files/inspector/[fileId]/page.js"
+    ],
+    "/(layout)/boxes/inspector/[boxId]/page": [
+      "static/chunks/webpack.js",
+      "static/chunks/main-app.js",
+      "static/chunks/app/(layout)/boxes/inspector/[boxId]/page.js"
+    ],
+    "/(layout)/login/page": [
+      "static/chunks/webpack.js",
+      "static/chunks/main-app.js",
+      "static/chunks/app/(layout)/login/page.js"
     ]
   }
 }
