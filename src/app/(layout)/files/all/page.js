@@ -10,21 +10,24 @@ import Search from "@/ui/Search/Search";
 import { getAllFiles, getFileById } from "@/modules/files/api";
 import UploadFile from "@/ui/UploadFile/UploadFile";
 import ListItem from "@/ui/ListItem/ListItem";
-import { shortenWalletAddress } from "@/lib/helpers"
+import { shortenWalletAddress } from "@/lib/helpers";
 
 import PlusIcon from "../../../../ui/UploadFile/PlusIcon";
 
-import { useEffect, useState, useCallback } from "react";
+import { useEffect, useState, useCallback, useRef } from "react";
 import { useAppKitAccount } from "@reown/appkit/react";
 
 import { createOpenPopupTl, createClosePopupTl } from "@/lib/util/animations";
 
-import {byteToMegabyte} from "@/lib/helpers";
+import { byteToMegabyte } from "@/lib/helpers";
 
 import PopupCloseIcon from "@/modules/files/components/icons/PopupCloseIcon";
 
 export default function AllFilesPage() {
   const { address } = useAppKitAccount();
+
+  const createBoxOpenTlRef = useRef(null);
+  const createBoxCloseTlRef = useRef(null);
 
   const [accountBalance, setAccountBalance] = useState(0);
   const [boxName, setBoxName] = useState("");
@@ -77,16 +80,17 @@ export default function AllFilesPage() {
     });
   };
 
-  let createBoxOpenTl = createOpenPopupTl('create-box');
-  let createBoxCloseTl = createClosePopupTl('create-box');
-
   const openBoxPopup = async () => {
-    createBoxOpenTl.restart();
+    if (!createBoxOpenTlRef?.current) return;
+
+    createBoxOpenTlRef.current.restart();
   };
 
   const closeBoxPopup = async () => {
-    if (!createBoxCloseTl.isActive()) {
-      createBoxCloseTl.restart();
+    if (!createBoxCloseTlRef?.current) return;
+
+    if (!createBoxCloseTlRef.current.isActive()) {
+      createBoxCloseTlRef.current.restart();
     }
   };
 
@@ -102,6 +106,11 @@ export default function AllFilesPage() {
     getRsnBalance().then((res) => {
       setAccountBalance(res);
     });
+  }, []);
+
+  useEffect(() => {
+    createBoxOpenTlRef.current = createOpenPopupTl("create-box");
+    createBoxCloseTlRef.current = createClosePopupTl("create-box");
   }, []);
 
   return (
@@ -236,13 +245,22 @@ export default function AllFilesPage() {
                     Encrypting
                   </div>
                   <div className="upload-progress_item_dots">
-                    <span data-upload-dot="1" className="upload-progress_item_dot">
+                    <span
+                      data-upload-dot="1"
+                      className="upload-progress_item_dot"
+                    >
                       .
                     </span>
-                    <span data-upload-dot="2" className="upload-progress_item_dot">
+                    <span
+                      data-upload-dot="2"
+                      className="upload-progress_item_dot"
+                    >
                       .
                     </span>
-                    <span data-upload-dot="3" className="upload-progress_item_dot">
+                    <span
+                      data-upload-dot="3"
+                      className="upload-progress_item_dot"
+                    >
                       .
                     </span>
                   </div>
@@ -259,13 +277,22 @@ export default function AllFilesPage() {
                     Sharding
                   </div>
                   <div className="upload-progress_item_dots">
-                    <span data-upload-dot="1" className="upload-progress_item_dot">
+                    <span
+                      data-upload-dot="1"
+                      className="upload-progress_item_dot"
+                    >
                       .
                     </span>
-                    <span data-upload-dot="2" className="upload-progress_item_dot">
+                    <span
+                      data-upload-dot="2"
+                      className="upload-progress_item_dot"
+                    >
                       .
                     </span>
-                    <span data-upload-dot="3" className="upload-progress_item_dot">
+                    <span
+                      data-upload-dot="3"
+                      className="upload-progress_item_dot"
+                    >
                       .
                     </span>
                   </div>
@@ -282,13 +309,22 @@ export default function AllFilesPage() {
                     Sign transaction
                   </div>
                   <div className="upload-progress_item_dots">
-                    <span data-upload-dot="1" className="upload-progress_item_dot">
+                    <span
+                      data-upload-dot="1"
+                      className="upload-progress_item_dot"
+                    >
                       .
                     </span>
-                    <span data-upload-dot="2" className="upload-progress_item_dot">
+                    <span
+                      data-upload-dot="2"
+                      className="upload-progress_item_dot"
+                    >
                       .
                     </span>
-                    <span data-upload-dot="3" className="upload-progress_item_dot">
+                    <span
+                      data-upload-dot="3"
+                      className="upload-progress_item_dot"
+                    >
                       .
                     </span>
                   </div>
@@ -305,13 +341,22 @@ export default function AllFilesPage() {
                     Uploading
                   </div>
                   <div className="upload-progress_item_dots">
-                    <span data-upload-dot="1" className="upload-progress_item_dot">
+                    <span
+                      data-upload-dot="1"
+                      className="upload-progress_item_dot"
+                    >
                       .
                     </span>
-                    <span data-upload-dot="2" className="upload-progress_item_dot">
+                    <span
+                      data-upload-dot="2"
+                      className="upload-progress_item_dot"
+                    >
                       .
                     </span>
-                    <span data-upload-dot="3" className="upload-progress_item_dot">
+                    <span
+                      data-upload-dot="3"
+                      className="upload-progress_item_dot"
+                    >
                       .
                     </span>
                   </div>
@@ -328,13 +373,22 @@ export default function AllFilesPage() {
                     Hash received
                   </div>
                   <div className="upload-progress_item_dots">
-                    <span data-upload-dot="1" className="upload-progress_item_dot">
+                    <span
+                      data-upload-dot="1"
+                      className="upload-progress_item_dot"
+                    >
                       .
                     </span>
-                    <span data-upload-dot="2" className="upload-progress_item_dot">
+                    <span
+                      data-upload-dot="2"
+                      className="upload-progress_item_dot"
+                    >
                       .
                     </span>
-                    <span data-upload-dot="3" className="upload-progress_item_dot">
+                    <span
+                      data-upload-dot="3"
+                      className="upload-progress_item_dot"
+                    >
                       .
                     </span>
                   </div>
@@ -370,14 +424,19 @@ export default function AllFilesPage() {
             </div>
           </div>
           <div data-popup="error-size" className="popup_component">
-            <div data-popup-overlay="error-size" className="popup_overlay"></div>
+            <div
+              data-popup-overlay="error-size"
+              className="popup_overlay"
+            ></div>
             <div data-popup-content="error-size" className="popup_content">
               <div className="error_component">
                 <div className="error_icon"></div>
                 <div className="text-style-muted">
                   Currently, a maximum file size is limited to 10 MB.
                 </div>
-                <div className="text-style-muted">Please try a smaller file.</div>
+                <div className="text-style-muted">
+                  Please try a smaller file.
+                </div>
               </div>
             </div>
           </div>
@@ -397,8 +456,7 @@ export default function AllFilesPage() {
             data-popup-overlay="create-box"
             className="popup_overlay"
             onClick={closeBoxPopup}
-          >
-          </div>
+          ></div>
           <div data-popup-content="create-box" className="popup_content">
             <h2 className="popup_heading">New Box</h2>
             <div className="create-box_component">
