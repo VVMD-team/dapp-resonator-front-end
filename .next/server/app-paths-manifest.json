@@ -1,1 +1,5 @@
-{}
+{
+  "/(layout)/files/inspector/[fileId]/page": "app/(layout)/files/inspector/[fileId]/page.js",
+  "/(layout)/login/page": "app/(layout)/login/page.js",
+  "/(layout)/page": "app/(layout)/page.js"
+}
